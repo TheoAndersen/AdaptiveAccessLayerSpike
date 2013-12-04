@@ -53,25 +53,30 @@ namespace AdaptiveAccessLayerSpike
             typeBuilder.DefineMethodOverride(methBuilder, interfaceMethod);
 
             var ilGenerator = methBuilder.GetILGenerator();
+            CreateObjectArrayForParameters(parameters, ilGenerator);
+            SaveParametersInObjectArray(parameters, ilGenerator);
+            CallExecuteImplWithMethodBaseAndParameters(ilGenerator);
+
+            ilGenerator.Emit(OpCodes.Pop);
+            ilGenerator.Emit(OpCodes.Ret);
+            methBuilder.SetParameters(new Type[] { typeof(string) });
+        }
+
+        private static void CreateObjectArrayForParameters(Type[] parameters, ILGenerator ilGenerator)
+        {
             ilGenerator.DeclareLocal(typeof(object[]));
             ilGenerator.Emit(OpCodes.Nop);
             ilGenerator.Emit(OpCodes.Ldc_I4, parameters.Count());
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_0);
+        }
 
+        private static void SaveParametersInObjectArray(Type[] parameters, ILGenerator ilGenerator)
+        {
             for (int i = 0; i < parameters.Count(); i++)
-			{
+            {
                 SaveParamInObjectArray(ilGenerator, parameters[i], i);
             }
-
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetCurrentMethod"));
-            MethodInfo mInfo = typeof(LogAccessLayer).GetMethod("ExecuteImpl");
-            ilGenerator.Emit(OpCodes.Ldloc_0);
-            ilGenerator.EmitCall(OpCodes.Call, mInfo, new[] { typeof(MethodBase), typeof(object[]) });
-            ilGenerator.Emit(OpCodes.Pop);
-            ilGenerator.Emit(OpCodes.Ret);
-            methBuilder.SetParameters(new Type[] { typeof(string) });
         }
 
         private static void SaveParamInObjectArray(ILGenerator ilGenerator, Type parameter, int numParam)
@@ -93,6 +98,13 @@ namespace AdaptiveAccessLayerSpike
             }
         }
 
-
+        private static void CallExecuteImplWithMethodBaseAndParameters(ILGenerator ilGenerator)
+        {
+            ilGenerator.Emit(OpCodes.Ldarg_0);
+            ilGenerator.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetCurrentMethod"));
+            MethodInfo mInfo = typeof(LogAccessLayer).GetMethod("ExecuteImpl");
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.EmitCall(OpCodes.Call, mInfo, new[] { typeof(MethodBase), typeof(object[]) });
+        }
     }
 }
