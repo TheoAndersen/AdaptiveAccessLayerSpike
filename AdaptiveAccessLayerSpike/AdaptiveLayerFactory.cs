@@ -55,13 +55,15 @@ namespace AdaptiveAccessLayerSpike
             var ilGenerator = methBuilder.GetILGenerator();
             ilGenerator.DeclareLocal(typeof(object[]));
             ilGenerator.Emit(OpCodes.Nop);
-            ilGenerator.Emit(OpCodes.Ldc_I4_1);
+            ilGenerator.Emit(OpCodes.Ldc_I4, parameters.Count());
             ilGenerator.Emit(OpCodes.Newarr, typeof(object));
             ilGenerator.Emit(OpCodes.Stloc_0);
-            ilGenerator.Emit(OpCodes.Ldloc_0);
-            ilGenerator.Emit(OpCodes.Ldc_I4_0);
-            ilGenerator.Emit(OpCodes.Ldarg_1);
-            ilGenerator.Emit(OpCodes.Stelem_Ref);
+
+            for (int i = 0; i < parameters.Count(); i++)
+			{
+                SaveParamInObjectArray(ilGenerator, parameters[i], i);
+            }
+
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetCurrentMethod"));
             MethodInfo mInfo = typeof(LogAccessLayer).GetMethod("ExecuteImpl");
@@ -71,5 +73,26 @@ namespace AdaptiveAccessLayerSpike
             ilGenerator.Emit(OpCodes.Ret);
             methBuilder.SetParameters(new Type[] { typeof(string) });
         }
+
+        private static void SaveParamInObjectArray(ILGenerator ilGenerator, Type parameter, int numParam)
+        {
+            if(parameter.IsValueType == false)
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ldc_I4, numParam);
+                ilGenerator.Emit(OpCodes.Ldarg, numParam+1);
+                ilGenerator.Emit(OpCodes.Stelem_Ref);
+            }
+            else
+            {
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ldc_I4, numParam);
+                ilGenerator.Emit(OpCodes.Ldarg, numParam + 1);
+                ilGenerator.Emit(OpCodes.Box, parameter);
+                ilGenerator.Emit(OpCodes.Stelem_Ref);
+            }
+        }
+
+
     }
 }

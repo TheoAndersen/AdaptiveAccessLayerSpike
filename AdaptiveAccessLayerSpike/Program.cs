@@ -12,7 +12,7 @@ namespace AdaptiveAccessLayerSpike
         {
             ITestLogWriter testLogWriter = AdaptiveLayerFactory.CreateLogWriter<ITestLogWriter>();
 
-            testLogWriter.Log("Did it log anything?");
+            testLogWriter.Log("Did it log anything?", 42);
         }
     }
 }

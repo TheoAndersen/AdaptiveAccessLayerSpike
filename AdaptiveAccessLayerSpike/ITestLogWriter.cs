@@ -11,15 +11,16 @@ namespace AdaptiveAccessLayerSpike
     public interface ITestLogWriter
     {
         [LogEntryContract]
-        void Log(string message);
+        void Log(string message, int second);
     }
 
     public class TestLogWriterImpl : LogAccessLayer, ITestLogWriter
     {
-        public void Log(string message)
+        public void Log(string message, int second)
         {
-            object[] parameters = new object[1]; 
+            object[] parameters = new object[2]; 
             parameters[0] = message;
+            parameters[1] = second;
             base.ExecuteImpl(MethodBase.GetCurrentMethod(), parameters);
         }
     }   

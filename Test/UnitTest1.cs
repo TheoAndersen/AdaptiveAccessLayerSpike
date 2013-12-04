@@ -14,7 +14,7 @@ namespace Test
             try
             {
                 ITestLogWriter testLogerWriterImplementation = AdaptiveLayerFactory.CreateLogWriter<ITestLogWriter>();
-                testLogerWriterImplementation.Log("noget");
+                testLogerWriterImplementation.Log("noget", 42);
             }
             catch (Exception ex)
             {
