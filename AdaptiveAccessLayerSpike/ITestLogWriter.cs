@@ -18,7 +18,9 @@ namespace AdaptiveAccessLayerSpike
     {
         public void Log(string message)
         {
-            base.ExecuteImpl(MethodBase.GetCurrentMethod());
+            object[] parameters = new object[1]; 
+            parameters[0] = message;
+            base.ExecuteImpl(MethodBase.GetCurrentMethod(), parameters);
         }
     }   
 }

@@ -9,9 +9,9 @@ namespace AdaptiveAccessLayerSpike
 {
     public abstract class AdaptiveLayerBase//<TAttributeData>
     {
-        public object ExecuteImpl(MethodBase methodBase)
+        public object ExecuteImpl(MethodBase methodBase, object[] parameters)
         {
-            return Execute(null, null, null);
+            return Execute(null, null, parameters);
         }
 
         public abstract object Execute(Attribute methodAttribute, MethodInfo methodInfo, object[] parameters);//, TAttributeData attributeData); 

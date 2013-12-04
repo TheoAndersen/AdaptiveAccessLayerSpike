@@ -24,35 +24,52 @@ namespace AdaptiveAccessLayerSpike
             typeBuilder.SetParent(typeof(LogAccessLayer));
 
 
+            var interfaceClass = typeof(T);
 
-            var interfaceAddMethod = typeof(T).GetMethod("Log");
+            foreach (MethodInfo method in interfaceClass.GetMethods())
+            {
+                CreateMethodImplementation<T>(typeBuilder, method);
+            }
 
-            var methBuilder = typeBuilder.DefineMethod("Log", MethodAttributes.Public |
+            Type generatedType = typeBuilder.CreateType();
+            return (T)Activator.CreateInstance(generatedType);
+        }
+
+        private static void CreateMethodImplementation<T>(TypeBuilder typeBuilder, MethodInfo interfaceMethod)
+        {
+            var methBuilder = typeBuilder.DefineMethod(interfaceMethod.Name, MethodAttributes.Public |
                                 MethodAttributes.Virtual |
                                 MethodAttributes.Final |
                                 MethodAttributes.NewSlot |
                                 MethodAttributes.HideBySig);
-            methBuilder.SetReturnType(interfaceAddMethod.ReturnType);
-            var parameters = interfaceAddMethod
+            methBuilder.SetReturnType(interfaceMethod.ReturnType);
+            var parameters = interfaceMethod
                 .GetParameters()
                 .Select(parameter => parameter.ParameterType)
                 .ToArray();
             methBuilder.SetParameters(parameters);
-            
-            typeBuilder.DefineMethodOverride(methBuilder, interfaceAddMethod);
+            methBuilder.InitLocals = true;
+
+            typeBuilder.DefineMethodOverride(methBuilder, interfaceMethod);
 
             var ilGenerator = methBuilder.GetILGenerator();
+            ilGenerator.DeclareLocal(typeof(object[]));
             ilGenerator.Emit(OpCodes.Nop);
+            ilGenerator.Emit(OpCodes.Ldc_I4_1);
+            ilGenerator.Emit(OpCodes.Newarr, typeof(object));
+            ilGenerator.Emit(OpCodes.Stloc_0);
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.Emit(OpCodes.Ldc_I4_0);
+            ilGenerator.Emit(OpCodes.Ldarg_1);
+            ilGenerator.Emit(OpCodes.Stelem_Ref);
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetCurrentMethod"));
             MethodInfo mInfo = typeof(LogAccessLayer).GetMethod("ExecuteImpl");
-            ilGenerator.EmitCall(OpCodes.Call, mInfo, new[] { typeof(MethodBase) });
+            ilGenerator.Emit(OpCodes.Ldloc_0);
+            ilGenerator.EmitCall(OpCodes.Call, mInfo, new[] { typeof(MethodBase), typeof(object[]) });
             ilGenerator.Emit(OpCodes.Pop);
             ilGenerator.Emit(OpCodes.Ret);
             methBuilder.SetParameters(new Type[] { typeof(string) });
-
-            Type generatedType = typeBuilder.CreateType();
-            return (T)Activator.CreateInstance(generatedType);
         }
     }
 }
