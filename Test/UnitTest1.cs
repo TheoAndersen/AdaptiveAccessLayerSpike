@@ -7,7 +7,6 @@ namespace Test
     [TestClass]
     public class UnitTest1
     {
-
         [TestMethod]
         public void AdaptiveLayerFactory_CanCreateImplementationOfInterfaceT()
         {
@@ -18,7 +17,7 @@ namespace Test
             }
             catch (Exception ex)
             {
-                Assert.Fail("Could not create implementation " + ex);
+                Assert.AreEqual("her.. logaccesslayer. --> " + Environment.NewLine + "noget-42", ex.Message);
             }
         }
     }
