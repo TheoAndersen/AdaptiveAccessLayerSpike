@@ -13,11 +13,14 @@ namespace Test
             try
             {
                 var result = AdaptiveLayerFactory.CreateLogWriter<ITestLogWriter>();
+                result.Log("noget", 42);
             }
             catch (Exception ex)
             {
                 Assert.AreEqual("her.. logaccesslayer. --> " + Environment.NewLine + "noget-42", ex.Message);
+                return;
             }
+            Assert.Fail("didn't cast exception");
         }
 
         [AttributeUsage(AttributeTargets.Method)]
@@ -38,15 +41,17 @@ namespace Test
         public interface ITestInterface
         {
             [TestMethodContract]
-            void TestMethod(string message, int number);
+            object[] TestMethod(string message, int number);
         }
 
         [TestMethod]
         public void CreateLogWriter_ShouldCreateImplementationWhichCanPassAlongTheParametersOfTheMethodAndReturnAnAnswer()
         {
             var testInterfaceImplementation = AdaptiveLayerFactory.CreateLogWriter<ITestInterface>();
-            testInterfaceImplementation.TestMethod("noget", 42);
-            //Assert.AreEqual(2, result.Length);
+            object[] result = testInterfaceImplementation.TestMethod("noget", 42);
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual("noget", result[0] as string);
+            Assert.AreEqual(42, (int)result[1]);
         }
     }
 

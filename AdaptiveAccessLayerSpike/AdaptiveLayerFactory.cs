@@ -69,9 +69,20 @@ namespace AdaptiveAccessLayerSpike
             SaveParametersInObjectArray(parameters, ilGenerator);
             CallExecuteImplWithMethodBaseAndParameters(ilGenerator, adaptiveAccessType);
 
-            ilGenerator.Emit(OpCodes.Pop);
+            if (interfaceMethod.ReturnType.Equals(typeof(void)))
+            {
+                ilGenerator.Emit(OpCodes.Castclass, interfaceMethod.ReturnType);
+                ilGenerator.Emit(OpCodes.Stloc_1);
+                Label targetInstruction = ilGenerator.DefineLabel();
+                ilGenerator.Emit(OpCodes.Br_S, targetInstruction);
+                ilGenerator.MarkLabel(targetInstruction);
+            }
+            else
+            {
+                ilGenerator.Emit(OpCodes.Nop);
+            }
+             
             ilGenerator.Emit(OpCodes.Ret);
-            methBuilder.SetParameters(new Type[] { typeof(string) });
         }
 
         private static void CreateObjectArrayForParameters(Type[] parameters, ILGenerator ilGenerator)
