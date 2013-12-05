@@ -75,27 +75,22 @@ namespace AdaptiveAccessLayerSpike
         {
             for (int i = 0; i < parameters.Count(); i++)
             {
-                SaveParamInObjectArray(ilGenerator, parameters[i], i);
+                ilGenerator.Emit(OpCodes.Ldloc_0);
+                ilGenerator.Emit(OpCodes.Ldc_I4, i);
+                ilGenerator.Emit(OpCodes.Ldarg, i + 1);
+
+                if (parameters[i].IsValueType)
+                {
+                    ilGenerator.Emit(OpCodes.Box, parameters[i]);
+                }
+
+                ilGenerator.Emit(OpCodes.Stelem_Ref);
             }
         }
 
         private static void SaveParamInObjectArray(ILGenerator ilGenerator, Type parameter, int numParam)
         {
-            if(parameter.IsValueType == false)
-            {
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Ldc_I4, numParam);
-                ilGenerator.Emit(OpCodes.Ldarg, numParam+1);
-                ilGenerator.Emit(OpCodes.Stelem_Ref);
-            }
-            else
-            {
-                ilGenerator.Emit(OpCodes.Ldloc_0);
-                ilGenerator.Emit(OpCodes.Ldc_I4, numParam);
-                ilGenerator.Emit(OpCodes.Ldarg, numParam + 1);
-                ilGenerator.Emit(OpCodes.Box, parameter);
-                ilGenerator.Emit(OpCodes.Stelem_Ref);
-            }
+            
         }
 
         private static void CallExecuteImplWithMethodBaseAndParameters(ILGenerator ilGenerator)
