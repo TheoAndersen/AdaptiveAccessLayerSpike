@@ -44,7 +44,6 @@
     <Compile Include="AdaptiveLayerBase.cs" />
     <Compile Include="AdaptiveLayerFactory.cs" />
     <Compile Include="ITestLogWriter.cs" />
-    <Compile Include="LogAccessLayer.cs" />
     <Compile Include="LogContract.cs" />
     <Compile Include="LogEntryContract.cs" />
     <Compile Include="Program.cs" />

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace AdaptiveAccessLayerSpike
 {
-    public abstract class AdaptiveLayerBase//<TAttributeData>
+    [AttributeUsage(AttributeTargets.Interface)]
+    public abstract class AdaptiveLayerBase : Attribute
     {
         public object ExecuteImpl(MethodBase methodBase, object[] parameters)
         {

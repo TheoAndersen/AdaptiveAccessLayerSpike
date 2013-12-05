@@ -21,21 +21,33 @@ namespace AdaptiveAccessLayerSpike
             // Create type builder
             TypeBuilder typeBuilder = methodBuilder.DefineType(typeof(T).Name.TrimStart('I') + "Impl", TypeAttributes.Public | TypeAttributes.Class);
             typeBuilder.AddInterfaceImplementation(typeof(T));
-            typeBuilder.SetParent(typeof(LogAccessLayer));
+            Type adaptiveLayerType = GetAdaptiveImplementationType<T>();
+            typeBuilder.SetParent(adaptiveLayerType);
 
 
             var interfaceClass = typeof(T);
 
             foreach (MethodInfo method in interfaceClass.GetMethods())
             {
-                CreateMethodImplementation<T>(typeBuilder, method);
+                CreateMethodImplementation<T>(typeBuilder, method, adaptiveLayerType);
             }
 
             Type generatedType = typeBuilder.CreateType();
             return (T)Activator.CreateInstance(generatedType);
         }
 
-        private static void CreateMethodImplementation<T>(TypeBuilder typeBuilder, MethodInfo interfaceMethod)
+        private static Type GetAdaptiveImplementationType<T>()
+        {
+            var customAttributes = typeof(T).CustomAttributes;
+            var baseLayerAttribute = customAttributes.SingleOrDefault(a => a.AttributeType.BaseType.Equals(typeof(AdaptiveLayerBase)));
+            if (baseLayerAttribute == null)
+            {
+                throw new Exception("The interface: " + typeof(T).Name + " doesn't have an interface attribute that inherits from AdaptiveLayerBase");
+            }
+            return baseLayerAttribute.AttributeType;
+        }
+
+        private static void CreateMethodImplementation<T>(TypeBuilder typeBuilder, MethodInfo interfaceMethod, Type adaptiveAccessType)
         {
             var methBuilder = typeBuilder.DefineMethod(interfaceMethod.Name, MethodAttributes.Public |
                                 MethodAttributes.Virtual |
@@ -55,7 +67,7 @@ namespace AdaptiveAccessLayerSpike
             var ilGenerator = methBuilder.GetILGenerator();
             CreateObjectArrayForParameters(parameters, ilGenerator);
             SaveParametersInObjectArray(parameters, ilGenerator);
-            CallExecuteImplWithMethodBaseAndParameters(ilGenerator);
+            CallExecuteImplWithMethodBaseAndParameters(ilGenerator, adaptiveAccessType);
 
             ilGenerator.Emit(OpCodes.Pop);
             ilGenerator.Emit(OpCodes.Ret);
@@ -88,16 +100,11 @@ namespace AdaptiveAccessLayerSpike
             }
         }
 
-        private static void SaveParamInObjectArray(ILGenerator ilGenerator, Type parameter, int numParam)
-        {
-            
-        }
-
-        private static void CallExecuteImplWithMethodBaseAndParameters(ILGenerator ilGenerator)
+        private static void CallExecuteImplWithMethodBaseAndParameters(ILGenerator ilGenerator, Type adaptiveAccessType)
         {
             ilGenerator.Emit(OpCodes.Ldarg_0);
             ilGenerator.Emit(OpCodes.Call, typeof(MethodBase).GetMethod("GetCurrentMethod"));
-            MethodInfo mInfo = typeof(LogAccessLayer).GetMethod("ExecuteImpl");
+            MethodInfo mInfo = adaptiveAccessType.GetMethod("ExecuteImpl");
             ilGenerator.Emit(OpCodes.Ldloc_0);
             ilGenerator.EmitCall(OpCodes.Call, mInfo, new[] { typeof(MethodBase), typeof(object[]) });
         }

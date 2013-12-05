@@ -14,7 +14,7 @@ namespace AdaptiveAccessLayerSpike
         void Log(string message, int second);
     }
 
-    public class TestLogWriterImpl : LogAccessLayer, ITestLogWriter
+    public class TestLogWriterImpl : LogContract, ITestLogWriter
     {
         public void Log(string message, int second)
         {
