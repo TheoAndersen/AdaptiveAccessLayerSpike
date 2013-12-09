@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdaptiveAccessLayerSpike
+namespace AdaptiveAccessLayerSpike.AAL
 {
     [AttributeUsage(AttributeTargets.Interface)]
     public abstract class AdaptiveLayerBase : Attribute

@@ -50,10 +50,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="AdaptiveLayerFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AAL\AAL.csproj">
+      <Project>{ff677bdb-ea52-46b1-b85a-c6721f8ac6a7}</Project>
+      <Name>AAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AdaptiveAccessLayerSpike\Console.csproj">
       <Project>{012e2e9a-cd09-4e42-8384-5122244259fe}</Project>
       <Name>Console</Name>

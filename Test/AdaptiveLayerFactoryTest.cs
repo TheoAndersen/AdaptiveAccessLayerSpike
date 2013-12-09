@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AdaptiveAccessLayerSpike;
+using AdaptiveAccessLayerSpike.AAL;
 
 namespace Test
 {

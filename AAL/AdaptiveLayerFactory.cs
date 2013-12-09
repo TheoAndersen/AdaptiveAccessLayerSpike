@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace AdaptiveAccessLayerSpike
+namespace AdaptiveAccessLayerSpike.AAL
 {
     public class AdaptiveLayerFactory
     {

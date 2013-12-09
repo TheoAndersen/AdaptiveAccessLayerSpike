@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "AdaptiveAccessLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{9AD0D40E-4916-4E22-979A-AF986A482C6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AAL", "AAL\AAL.csproj", "{FF677BDB-EA52-46B1-B85A-C6721F8AC6A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{9AD0D40E-4916-4E22-979A-AF986A482C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD0D40E-4916-4E22-979A-AF986A482C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD0D40E-4916-4E22-979A-AF986A482C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF677BDB-EA52-46B1-B85A-C6721F8AC6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF677BDB-EA52-46B1-B85A-C6721F8AC6A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF677BDB-EA52-46B1-B85A-C6721F8AC6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF677BDB-EA52-46B1-B85A-C6721F8AC6A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

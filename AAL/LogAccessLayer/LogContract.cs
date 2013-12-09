@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdaptiveAccessLayerSpike
+namespace AdaptiveAccessLayerSpike.AAL
 {
     [AttributeUsage(AttributeTargets.Interface)]
     public class LogContract : AdaptiveLayerBase
