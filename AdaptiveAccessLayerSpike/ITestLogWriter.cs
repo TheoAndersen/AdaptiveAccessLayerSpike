@@ -14,6 +14,9 @@ namespace AdaptiveAccessLayerSpike
         string Log(string message, int second);
     }
 
+    /// <summary>
+    /// This an example of the class that AdaptiveLayerFactory generates at runtime
+    /// </summary>
     public class TestLogWriterImpl : LogContract, ITestLogWriter
     {
         public string Log(string message, int second)
